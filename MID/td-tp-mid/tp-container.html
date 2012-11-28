@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sujet</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
+    <style type="text/css" media="screen">
+        code {
+            background-color: white;
+        }
+    </style>    
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="tp-conteneur">TP Conteneur</h1>
+
+<p>Ce TP est la mise en oeuvre d’un conteneur à composants comme détaillé en TD.</p>
+
+<h2 id="dmarrage">Démarrage</h2>
+
+<p>Un projet Maven vous est fourni pour démarrer. <strong>Prenez le temps de l’explorer !</strong></p>
+
+<p>Une vue simplifiée de l’interface d’un conteneur est la suivante :</p>
+
+<pre><code>public interface Container {
+    
+    Container declare(Binding binding);
+    Container define(String name, Object value);
+
+    &lt;T&gt; T obtainReference(Class&lt;T&gt; interfaceClass);
+    &lt;T&gt; T obtainReference(Class&lt;T&gt; interfaceClass, String qualifier);
+
+    Object definitionValue(String name);
+
+    boolean hasReferenceDeclaredFor(Class&lt;?&gt; interfaceClass);
+    boolean hasReferenceDeclaredFor(Class&lt;?&gt; interfaceClass, String qualifier);
+    boolean hasValueDefinedFor(String name);
+
+    Container delegateTo(Container container);
+}
+</code></pre>
+
+<p>Le lien interface - implémentation se fait via la classe <em>Binding</em> (simplifiée) suivante ainsi que le type énuméré <em>Policy</em> et la classe <em>Key</em> :</p>
+
+<pre><code>public final class Binding {
+
+    public static enum Policy {
+        SINGLETON, NEW
+    }
+
+    public static final class Key {
+        private final Class&lt;?&gt; interfaceClass;
+        private final String qualifier;
+
+        public Key(Class&lt;?&gt; interfaceClass, String qualifier) {
+            this.interfaceClass = interfaceClass;
+            this.qualifier = qualifier;
+        }
+
+        public Class&lt;?&gt; getInterfaceClass() {
+            return interfaceClass;
+        }
+
+        public String getQualifier() {
+            return qualifier;
+        }
+    }
+
+    private final Class&lt;?&gt; interfaceClass;
+    private final Class&lt;?&gt; implementationClass;
+    private final String qualifier;
+    private final Policy policy;
+
+    public Binding(Class&lt;?&gt; interfaceClass, Class&lt;?&gt; implementationClass, String qualifier, Policy policy) {
+        this.interfaceClass = interfaceClass;
+        this.implementationClass = implementationClass;
+        this.qualifier = qualifier;
+        this.policy = policy;
+    }
+
+    public Class&lt;?&gt; getInterfaceClass() {
+        return interfaceClass;
+    }
+
+    public Class&lt;?&gt; getImplementationClass() {
+        return implementationClass;
+    }
+
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public Policy getPolicy() {
+        return policy;
+    }
+
+    public Key getKey() {
+        return new Key(interfaceClass, qualifier);
+    }
+}
+</code></pre>
+
+<p>La définition de l’annotation <em>@Named</em> est la suivante :</p>
+
+<pre><code>@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface Named {
+    String value();
+}
+</code></pre>
+
+<p>Enfin, pour traiter les cas d’erreurs nous vous proposons de lever une <em>unchecked exception</em>, c’est à dire une exception pour laquelle le compilateur ne vous force pas de les gérer et déclarer :</p>
+
+<pre><code>public class ContainerException extends RuntimeException {
+    public ContainerException() {
+    }
+
+    public ContainerException(String s) {
+        super(s);
+    }
+
+    public ContainerException(String s, Throwable throwable) {
+        super(s, throwable);
+    }
+
+    public ContainerException(Throwable throwable) {
+        super(throwable);
+    }
+}
+</code></pre>
+
+<p>Pour implémenter le conteneur, nous vous proposons la classe <em>LocalContainer</em> du package <em>midcontainers.local</em> que vous devrez implémenter :</p>
+
+<pre><code>public class LocalContainer implements Container {
+    // TODO
+}
+</code></pre>
+
+<h2 id="tests">Tests</h2>
+
+<p>Nous vous donné une série de tests unitaires et des composants pour ceux-ci.</p>
+
+<p>Le package <em>midcontainers.components</em> de <em>src/test/java</em> contient quelques composants simples comme :</p>
+
+<pre><code>public class SomeCounter implements Counter {
+
+    private int value = 0;
+
+    @Override
+    public int get() {
+        return value;
+    }
+
+    @Override
+    public int increment() {
+        value = value + 1;
+        return value;
+    }
+}
+</code></pre>
+
+<p>La classe <em>midcontainers.local.LocalContainerTest</em> contient l’ensemble des tests unitaires. Ils utilisent ces composants pour verifier que votre implémentation de conteneur est correcte.</p>
+
+<p>Nous les avons tous mis en commentaires car initialement votre conteneur n’est pas implémenter. Maven exécute ces tests automatiquement. Par exemple le test suivant vérifie que l’injection fonctionne :</p>
+
+<pre><code>@Test
+public void check_injection() {
+    Container container = new LocalContainer();
+    container
+            .declare(new Binding(Echo.class, SomeEcho.class, null, NEW))
+            .declare(new Binding(EchoClient.class, SomeEchoClient.class, null, NEW))
+            .define("prefix", "[ ")
+            .define("suffix", " ]")
+            .define("message", "hello");
+
+    EchoClient client = container.obtainReference(EchoClient.class);
+    assertThat(client.run(), is("[ hello ]"));
+}
+</code></pre>
+
+<p><strong>Nous vous invitons à les décommenter au fur et à mesure. Ces tests sont une spécification : votre travail sera correct si et seulement si les tests passent sans que vous les modifiez.</strong></p>
+
+<h2 id="conseils">Conseils</h2>
+
+<p>Votre conteneur devra gérer des collections d’objets diverses.</p>
+
+<p>Lorsque nous avons mis en oeuvre ce TP, nous avons utilisé les définitions suivantes :</p>
+
+<pre><code>private final Map&lt;Binding.Key, Binding&gt; bindings = new HashMap&lt;Binding.Key, Binding&gt;();
+private final Map&lt;String, Object&gt; definitions = new HashMap&lt;String, Object&gt;();
+private final Map&lt;Binding.Key, Object&gt; singletons = new HashMap&lt;Binding.Key, Object&gt;();
+private final List&lt;Container&gt; delegates = new LinkedList&lt;Container&gt;();
+</code></pre>
+
+<p>Bien entendu vous êtes libres de faire autrement.</p>
+
+<p>Les APIs d’instrospection en Java sont dans le package <em>java.util.reflect</em>.</p>
+
+<p>Voici quelques extraits de code faisant de l’introspection, à vous de jouer pour implémenter correctement votre mécanisme d’assemblage.</p>
+
+<p>Récupérer les constructeurs d’une classe :</p>
+
+<pre><code>Constructor&lt;?&gt;[] constructors = binding.getImplementationClass().getConstructors();
+</code></pre>
+
+<p>Récupérer les types de paramètres d’un constructeur et les éventuelles annotations qui ont peu être déclarées sur ceux-ci :</p>
+
+<pre><code>Class&lt;?&gt;[] parameterTypes = constructor.getParameterTypes();
+Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+</code></pre>
+
+<p>Instancier un objet via son constructeur (<em>parameterValues</em> est un <em>Object[]</em>):</p>
+
+<pre><code>constructor.newInstance(parameterValues);
+</code></pre>
+
+<p>Récupérer la valeur d’un attribut <em>@Named</em> pour un paramètre :</p>
+
+<pre><code>private String qualifierNameFor(Annotation[] parameterAnnotations) {
+    for (Annotation annotation : parameterAnnotations) {
+        if (annotation instanceof Named) {
+            return ((Named) annotation).value();
+        }
+    }
+    return null;
+}
+</code></pre>
+
+    </div>    
+</body>
+
+</html>

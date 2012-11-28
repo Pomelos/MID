@@ -1,0 +1,26 @@
+# Gotta <3 Ruby
+
+desc "Just build the damn HTML output"
+task :default do
+  Dir["*.markdown"].each do |src|
+    command = "kramdown --template basic.erb #{src} > #{src[0..-10]}.html"
+    puts command
+    system command
+  end
+end
+
+desc "Cleanup. What else?"
+task :clean => :clobber_package do
+  rm Dir["*.html"]
+end
+
+require "rake/packagetask"
+Rake::PackageTask.new("td-tp-javaee", "2012") do |p|
+  p.need_zip = true
+  p.package_files = Dir["**/*"]
+end
+
+desc "All in one place"
+task :all => [:clean, :default, :package] do
+  # Nothin'... just pull dependencies!
+end

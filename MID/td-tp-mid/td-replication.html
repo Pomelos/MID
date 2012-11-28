@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sujet</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
+    <style type="text/css" media="screen">
+        code {
+            background-color: white;
+        }
+    </style>    
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="td-rplication-de-cache">TD Réplication de cache</h1>
+
+<p>Un cache peut être vu comme un ensemble de paires clé / valeur.</p>
+
+<p>On les utilise dans de nombreux contextes en middlewares :</p>
+
+<ul>
+  <li>sessions web coté serveur,</li>
+  <li>rendu de fragments de HTML dynamiques,</li>
+  <li>éviter les accès disque coûteux,</li>
+  <li>coopération dans un cluster,</li>
+  <li>…</li>
+</ul>
+
+<h2 id="api-de-cache">API de cache</h2>
+
+<ol>
+  <li>Proposer une interface Java pour un service de cache supportant les opérations suivantes :
+    <ul>
+      <li>insertion clé / valeur,</li>
+      <li>obtention via clé,</li>
+      <li>suppression via clé.</li>
+    </ul>
+  </li>
+  <li>Proposer une implémentation en mémoire, adaptée à un usage local au sein d’une application.</li>
+  <li>On souhaite maintenant que des instances de caches sur un même réseau puissent partager le même état en répliquant leurs opérations. Quel est l’impact sur les valeurs pouvant être stockées dans le cache ? Pourquoi ?</li>
+</ol>
+
+<h2 id="protocole-de-rplication">Protocole de réplication</h2>
+
+<p>Une API c’est bien … une implémentation c’est encore mieux !</p>
+
+<ol>
+  <li>Quel protocole réseau serait adapté pour des communications entre <em>n</em> participants ?</li>
+  <li>Quels messages échanger entre ces participants ?</li>
+  <li>Concevez un protocole de réplication / synchronisation de cache qui réponde le plus favorablement possible aux questions suivantes.
+    <ul>
+      <li>Votre protocole est-il résistant aux pannes ?</li>
+      <li>Êtes-vous indépendant des horloges physiques des participants ? Les données peuvent-elles devenir incohérentes ?</li>
+      <li>Comment gérez-vous l’arrivée d’un nouveau participant ? Son départ ?</li>
+    </ul>
+  </li>
+  <li>Que dire du traffic réseau induit par votre protocole ?</li>
+</ol>
+
+<p>Justifiez vos réponses par des arguments scientifiques : contre-exemples et/ou preuves.</p>
+
+    </div>    
+</body>
+
+</html>

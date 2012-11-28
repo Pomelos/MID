@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sujet</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
+    <style type="text/css" media="screen">
+        code {
+            background-color: white;
+        }
+    </style>    
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="td-messaging-fiable">TD Messaging fiable</h1>
+
+<p>L’objectif de ce TD est de vous faire étudier les mécanismes permettant de réaliser un système de communication fiable par messages asynchrones.</p>
+
+<p>Nous allons mettre en oeuvre une solution de messaging simple en point-à-point. Les messages seront envoyés et consommmés dans une file, aussi appellée <em>“destination”</em>, et qui est simplement identifiée par un chaine de caractères.</p>
+
+<p>Le serveur de messages se nomme <em>“le broker”</em> auqel se connectent des <em>“clients”</em>.</p>
+
+<h2 id="apis">APIs</h2>
+
+<p>Commençons par travailler sur la définition d’APIs pour ce système de messaging.</p>
+
+<ol>
+  <li>Donner une définition abrégée d’une classe Java pour représenter un message comportant une destination et un contenu, aussi appellé <em>payload</em>.</li>
+  <li>Même question pour une classe <em>MessageBroker</em> permettant de :
+    <ul>
+      <li>le démarrer sur un port TCP,</li>
+      <li>l’arrêter.</li>
+    </ul>
+  </li>
+  <li>Même question de nouveau pour une classe <em>MessageBrokerClient</em> permettant de :
+    <ul>
+      <li>se connecter à un broker via le constructeur,</li>
+      <li>envoyer un message dans une file,</li>
+      <li>vérifier si un message est disponible depuis une file,</li>
+      <li>recevoir un message depuis une file,</li>
+      <li>fermer la connection au broker.</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="file-de-messages">File de messages</h2>
+
+<p>Un <em>MessageBroker</em> utilise un nombre variable de files, chacune portant un nom distinct. On se propose de représenter une file par une classe <em>MessageQueue</em>. Les instances de <em>MessageBroker</em> les utiliseront en interne, mais ne seront pas visibles au niveau du client (<em>MessageBrokerClient</em>).</p>
+
+<ol>
+  <li>Quelle structure de donnée utiliser pour gérer une file ? Quelle interface Java ? Quelle implémentation ? Justifiez vos choix.</li>
+  <li>Proposer une API pour une classe <em>MessageQueue</em> qui délègue à une structure interne de file choisie en (1).</li>
+  <li>Pourquoi de simples envois / réceptions de messages TCP ne sont-ils pas suffisants pour garantir la fiabilité au niveau applicatif des échanges de messages entre un broker et ses clients ? Justifier votre réponse en exposant les failles d’une implémentation naive où un message est considéré comme étant reçu à partir du moment où il a été envoyé ou reçu depuis une connection TCP.</li>
+  <li>Concevoir un protocole applicatif basé sur TCP pour une émission et une livraison fiable de messages. Discutez des limites de sa robustesse en fonction des choix d’implémentation.</li>
+</ol>
+
+<h2 id="file-de-messages-persistente">File de messages persistente</h2>
+
+<p>Dans la section précédente, nous avons supposé que les messages étaient stockés en mémoire dans les files. Ainsi, l’arrêt du broker entraine la perte des messages.</p>
+
+<p>Nous souhaitons rendre les files <em>persistentes</em>, c’est à dire que :</p>
+
+<ul>
+  <li>les messages sont stockés physiquement, et</li>
+  <li>les files de messages supportent la reprise après panne.</li>
+</ul>
+
+<ol>
+  <li>Proposez un mécanisme de stockage basé sur la sérialization Java vers un fichier en ajout seul.</li>
+  <li>Quelles sont les faiblesses en cas de panne ?</li>
+  <li>Proposer un mécanisme qui les corrige.</li>
+  <li>Proposer un algorithme de reprise après panne.</li>
+  <li>Risquez-vous d’avoir des problèmes de stockage disque manquant à terme ? Comment y remédier ?</li>
+</ol>
+
+    </div>    
+</body>
+
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sujet</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
+    <style type="text/css" media="screen">
+        code {
+            background-color: white;
+        }
+    </style>    
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="tp-java-ee-6">TP Java EE 6</h1>
+
+<p>Ce TP d’une durée de 8h vous permettra de vous familiariser avec le développement et l’intégration d’applications Java EE 6.</p>
+
+<p>Vous utiliserez Glassfish 3.1.1 sur le domaine par défaut <em>domain1</em> pour développer, tandis que vos projets seront construits avec Maven.</p>
+
+<p>Un template Maven pour une application (web) Java EE 6 vous est fourni dans le répertoire <a href="Template-JavaEE6-Maven">Template-JavaEE6-Maven</a>.</p>
+
+<h2 id="le-scnario-parfois-aussi-appelle-spcification-fonctionnelle">Le scénario (parfois aussi appellée spécification fonctionnelle)</h2>
+
+<p>Vous allez écrire une première application qui sera un <em>chat board</em>. On utilise ce type d’application pour d’autres choses que clavarder de la pluie et du beau temps. Des entreprises se basent dessus pour communiquer entre membres d’équipes distribuées. On pensera au vénérables canaux IRC, aux conversations groupées sur Skype ou encore à des solutions web comme <a href="http://campfirenow.com/">Campfire</a>.</p>
+
+<p>Votre splendide <em>chat board</em> ne supportera pas de mécanisme d’authentification particulière. La première connexion vous permettra de donner un signalement sur votre nom et email. Ces informations seront placées dans la session web de votre navigateur.</p>
+
+<p><img src="Chat.jpg" alt="Chat" /></p>
+
+<p>Une fois ces informations saisies, vous arriverez sur l’écran principal, à savoir le <em>chat board</em> tant attendu :</p>
+
+<p><img src="Chat_board.jpg" alt="Chat board" /></p>
+
+<p>Nous permettrons aux utilisateurs de signaler leur statut afin de notifier les autres participants de leur occupation : “parti faire les courses”, “dans la cuisine”, “au téléphone”, “dans ton cloud”, etc.</p>
+
+<p>Ceci se fera en saisissant un message commençant par <code>/status</code> comme dans la session suivante :</p>
+
+<pre><code>Brian &gt; Plop, salut à tous
+Susie &gt; Kikoooooo Brian, ça va ?
+Brian &gt; Ouais LOL
+Brian &gt; Bon c'est pas le tout. See ya.
+Susie &gt; Bye!
+Brian&gt; /status in the kitchen
+Susie &gt; ... je me disais aussi ...
+Carlos &gt; Eh eh eh
+</code></pre>
+
+<p>Votre application de chat board enverra les changements de statuts sur un canal de diffusion pour notifier les applications intéressées par le statut des participants au <em>chat board</em>.</p>
+
+<p>Cela tombe bien, ce sera votre deuxième application : un <em>status board</em> qui permet de savoir à quoi vaque chaque participant. Ce type d’application peut se voir déployée sur un téléviseur par exemple.</p>
+
+<p>La forme sera assez libre pour l’interface de cette application qui ou la page sera mise à jour toutes les 10 secondes, soit en AJAX, soit par un simple rafraichissement automatique de page.</p>
+
+<p><img src="Busy_board.jpg" alt="Busy_board" /></p>
+
+<h2 id="le-programme-">Le programme !</h2>
+
+<p>Nous vous proposons un programme avec les étapes suivantes :</p>
+
+<ul>
+  <li>spécifications fonctionelles</li>
+  <li>application web de chat</li>
+  <li>diffusion de status via JMS</li>
+  <li>application web de status.</li>
+</ul>
+
+<p>Vous pourrez ensuite selon le temps disponible approfondir avec :</p>
+
+<ul>
+  <li>améliorations de la présentation</li>
+  <li>persistence en bases de données avec JPA</li>
+  <li>gestion d’upload de fichiers.</li>
+</ul>
+
+<h2 id="step-1--une-application-web-de-chat">Step 1 : une application web de chat</h2>
+
+<p>Facile !</p>
+
+<ol>
+  <li>
+    <p>Modéliser un participant par une classe <strong>Participant</strong> dans le package <strong>chatapp.model</strong>. Les valeurs par défaut des noms et emails seront <strong>“N/A”</strong> comme <em>not available</em>.</p>
+  </li>
+  <li>
+    <p>Rendre cette classe disponible pour injection de dépendance (<code>@Named</code>) et dans un scope session web (<code>@SessionScoped</code>). Cela vous permettra de facilement associer une instance de <code>Participant</code> à une session web.</p>
+  </li>
+  <li>
+    <p>Modifiez la JSP <strong>index.jsp</strong> pour rediriger de la racine de l’application à l’URL <strong>join</strong></p>
+  </li>
+  <li>
+    <p>Créer une servlet <strong>chatapp.presentation.JoinServlet</strong> mappée sur l’URL <strong>/join</strong>.</p>
+  </li>
+  <li>
+    <p>Se faire injecter une instance de <code>chatapp.model.Participant</code> dans cette servlet.</p>
+  </li>
+  <li>
+    <p>Un HTTP GET sur cette Servlet présente l’écran de saisie nom / email. Un HTTP POST modifie ces valeurs dans l’instance de <code>chatapp.model.Participant</code> injectée, puis redirige en HTTP GET sur l’URL <em>board</em>.</p>
+  </li>
+  <li>
+    <p>La vue sera une JSP placée dans <strong>WEB-INF/views/join.jsp</strong>. Inspirez-vous de <em>TaskEE</em>, l’application du TD, pour sa rédaction et le passage Servlet -&gt; JSP pour le rendu.</p>
+  </li>
+  <li>
+    <p>Créer une classe <strong>chatapp.model.ChatMessage</strong> pour modéliser un message de chat : participant, date et contenu textuel.</p>
+  </li>
+  <li>
+    <p>Créer un composant / EJB pour gérer les messages en mémoire dans une <code>java.util.LinkedList</code>. Cet EJB sera <em>singleton</em> et placé dans la classe <code>chatapp.components.ChatBoard</code>. Vous fournirez un accesseur sur la liste des messages ainsi qu’une méthode d’ajout de <code>ChatMessage</code>.</p>
+  </li>
+  <li>
+    <p>Créer une servlet <strong>chatapp.presentation.BoardServlet</strong> sur l’URL <strong>board</strong> et ayant pour JSP de vue <strong>WEB-INF/views/board.jsp</strong>.</p>
+  </li>
+  <li>
+    <p>Injectez via <code>@Inject</code> l’instance de <code>Participant</code>, et via <code>@EJB</code> celle de <code>ChatBoard</code>.</p>
+  </li>
+  <li>
+    <p>Répondez à HTTP GET en donnant la liste des messages sur le chatboard via <code>board.jsp</code>. Répondez à HTTP POST par l’ajout d’un message, puis la redirection sur HTTP GET.</p>
+  </li>
+</ol>
+
+<h2 id="step-2--diffuser-les-status">Step 2 : diffuser les status</h2>
+
+<p>Nous allons créer 2 ressources sur notre serveur Glassfish :</p>
+
+<ul>
+  <li>une <em>connection factory</em> pour pouvoir se connecter au serveur JMS, et</li>
+  <li>une <em>destination</em> diffuser les messages.</li>
+</ul>
+
+<p>Nous prendrons un <em>Topic</em> et non pas une <em>Queue</em> car ce sont des communications <em>1 à n</em> que nous supposons.</p>
+
+<p><img src="connection-factory.png" alt="Connection Factory" /></p>
+
+<p><img src="destination.png" alt="Destination" /></p>
+
+<p>Le serveur JMS sera celui embarqué dans Glassfish dans la configuration par défaut de <em>domain1</em>. Nous pouvons lui faire un <em>ping</em> pour vérifier qu’il fonctionne. Si ce n’est pas le cas secouez sur le champ vos bras en signe de désespoir.</p>
+
+<p><img src="ping-openmq.png" alt="Ping OpenMQ" /></p>
+
+<p>La diffusion de statut depuis votre application nécessite les modifications suivantes.</p>
+
+<ol>
+  <li>
+    <p>Créer un EJB <em>stateless</em> dans la classe <strong>chatapp.components.StatusBroadcaster</strong>.</p>
+  </li>
+  <li>
+    <p>Injectez-lui via <code>@Resource</code> le <em>Topic</em> et la *Connection Factory**.</p>
+  </li>
+  <li>
+    <p>Ajoutez-lui une méthode publique <strong>postUpdate(String who, String status)</strong> qui envoie un <code>StringMessage</code> JMS. Un message sera encodé sous la forme textuelle <code>WHO(*.*)STATUS</code> comme dans <code>Brian(*.*)in the kitchen</code>.</p>
+  </li>
+  <li>
+    <p>Si vous n’avez pas compris les 2 points précédents, vous auriez sans doute gagné à écouter le cours, voire y assister.</p>
+  </li>
+  <li>
+    <p>Modifiez <code>BoardServlet</code> en lui injectant <code>StatusBroadcaster</code> avec <code>@Resource</code>. Pour chaque message commençant par <code>/status</code>, faire appel à ce composant pour poster un changement de statut de l´émetteur.</p>
+  </li>
+</ol>
+
+<h2 id="step-3--le-status-board">Step 3 : le status board</h2>
+
+<p>Faire une deuxième application. Vous devriez à présent savoir comment faire.</p>
+
+<p>Simplement, créez une Servlet <code>statusapp.presentation.StatusServlet</code> avec un rendu de vue depuis la JSP <code>WEB-INF/views/status.jsp</code>. Cette Servlet ne répond qu’eux HTTP GET.</p>
+
+<p>Elle se rafraichit toutes les 10 secondes. Une façcon simple de procéder consiste à insérer une balise <em>meta</em> dans le header HTML :</p>
+
+<pre><code>&lt;meta http-equiv="refresh" content="10" /&gt;
+</code></pre>
+
+<p>Pour gérer les status, concevez un EJB <em>singleton</em> <code>statusapp.components.Statuses</code> qui stocke dans une <code>HashMap</code> les status sous la forme <code>NAME is STATUS</code>, comme dans <code>Brian is in the kitchen</code>.</p>
+
+<p>Pour recevoir les messages, concevez un EJB <em>message-driven</em> <code>statusapp.components.StatusChangeReceiver</code>, mappé sur <strong>jms/ParticipantStatusBroadcast</strong> et qui pour chaque message reçu mets à jour une entrée dans <code>Statuses</code>.</p>
+
+<p>Là encore, ne pas hésiter à se référer au cours …</p>
+
+<p><code>StatusServlet</code> doit à présent lister les status au fur et à mesure que des messages sont reçus.</p>
+
+<h2 id="step-4--youpie-youpie">Step 4 : youpie, youpie</h2>
+
+<p>Si les 2 applications fonctionnent de pair, bravo, vous avez gagné. Vous savez écrire une petite application Java EE 6 et l’intégrer avec une autre.</p>
+
+<p>Bravo encore. S’il vous reste du temps sur les 8h, voici une liste de <em>steps</em> pour approfondir vos connaissances.</p>
+
+<h2 id="step-5--pimp-my-app">Step 5 : pimp my app</h2>
+
+<p>Vos applications ne ressemblent probablement à rien. Ce n’est pas grave : <a href="http://twitter.github.com/bootstrap/">intégrez la CSS Twitter Bootstrap</a> et adaptez votre HTML pour en tirer partie.</p>
+
+<p>En 15 minutes maximum vous devriez avoir quelque chose de plus présentable.</p>
+
+<p>Rendez également le nom de chaque émetteur de message clickable pour envoyer un email. Pour ce faire, utiliser un lien HTML :</p>
+
+<pre><code>&lt;div class="message"&gt;
+    &lt;span class="name"&gt;&lt;a href="mailto:brian.indakitchen@gmail.com"&gt;Brian&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="message-text"&gt;Kikooo à tous !!! LOL MDR XPTDR&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Admirez le chef d’oeuvre et soyez fiers de vous.</p>
+
+<h2 id="plus-loin-step-1--de-la-persistence-en-base-de-donnes">Plus loin step 1 : de la persistence en base de données</h2>
+
+<p>Glassfish est livré avec une base de donnée relationelle de très bonne facture : JavaDB, aussi connu sous le nom plus authentique de <a href="http://db.apache.org/derby/">Apache Derby</a>.</p>
+
+<p>Il nous faut créer une base Derby. Nous la nommerons <strong>ChatBoard</strong> :</p>
+
+<pre><code># Terminal 1
+$ javadb/bin/startNetworkServer
+
+# Terminal 2
+$ javadb/bin/ij
+ij version 10.6
+ij &gt; connect 'jdbc:derby://localhost:1527/ChatBoard;create=true';
+ij &gt; exit;
+</code></pre>
+
+<p>Nous pouvons désormais créer un pool de connexions vers la base, puis donner un nom de ressource JDBC :</p>
+
+<p><img src="derby1.png" alt="Derby1" /></p>
+
+<p><img src="derby2.png" alt="Derby2" /></p>
+
+<p><img src="derby3.png" alt="Derby3" /></p>
+
+<p>La création devrait vous donner un message <strong>Ping succeeded</strong>. Si ce n’est pas le cas : vous avez un problème. Lisez le message d’erreur avant de vous rouler par terre en pleurant.</p>
+
+<p><img src="derby4.png" alt="Derby4" /></p>
+
+<p>Transformez <code>ChatMessage</code> en <em>entity bean</em>. La référence à <code>Participant</code> sera transformée en 2 attributs de la classe <code>ChatMessage</code>, de sorte que seul <code>ChatMessage</code> sera persistée en base de données.</p>
+
+<p>Là encore le cours est votre ami si vous ne savez pas comment faire.</p>
+
+<p>Il vous faut configurer JPA pour disposer d’un <em>entity manager</em> :</p>
+
+<pre><code># Dans src/main/resources/META-INF/persistence.xml
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0"&gt;
+    &lt;persistence-unit name="chatboard-pu"&gt;
+        &lt;jta-data-source&gt;jdbc/ChatBoard&lt;/jta-data-source&gt;
+        &lt;class&gt;chatapp.model.ChatMessage&lt;/class&gt;
+        &lt;properties&gt;
+            &lt;property name="eclipselink.ddl-generation" value="create-tables"/&gt;
+            &lt;property name="eclipselink.logging.level" value="FINEST"/&gt;
+        &lt;/properties&gt;
+    &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+</code></pre>
+
+<p>Transformer <code>chatapp.components.ChatBoard</code> pour ne plus utiliser une liste en mémoire, mais faire appel à un entity manager sur la <em>persistence unit</em> <code>chatboard-pu</code>. Transformez-le aussi en EJB stateless.</p>
+
+<h2 id="plus-loin-step-2-aka-mode-warrior--upload-de-fichiers">Plus loin step 2 (<em>aka</em> mode <em>warrior</em>) : upload de fichiers</h2>
+
+<p>S’il vous reste du temps sur les 8 heures à cette étape alors il reste encore moyen de vous occuper.</p>
+
+<p>Ajoutez la possibili†é de partager un fichier dans le chat.</p>
+
+<ol>
+  <li>
+    <p>Pour gérer un upload coté Servlet, regardez du coté de <code>@MultipartConfig
+</code> dans les Servlets 3.</p>
+  </li>
+  <li>
+    <p>Pour gérer du contenu binaire coté base de données, regardez du coté de <code>@Blob</code></p>
+  </li>
+</ol>
+
+<p>Bonne chance :-)</p>
+
+    </div>    
+</body>
+
+</html>

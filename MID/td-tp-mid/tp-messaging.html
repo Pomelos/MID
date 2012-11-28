@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sujet</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
+    <style type="text/css" media="screen">
+        code {
+            background-color: white;
+        }
+    </style>    
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="tp-messaging">TP messaging</h1>
+
+<p>Ce TP est la suite logique du TD. Vous allez implémenter un système de messaging fiable avec des files de messages persistentes.</p>
+
+<h2 id="dmarrage-du-projet">Démarrage du projet</h2>
+
+<p>Pour vous faire gagner du temps, un projet <em>message-queue</em> de démarrage vous est fourni. Commencez par l’ajouter à votre projet précédent de conteneurs au même niveau que le module <em>ioc-container</em>.</p>
+
+<p>Dans le POM principal, ajoutez la référence au nouveau sous-module :</p>
+
+<pre><code>&lt;modules&gt;
+    &lt;module&gt;ioc-container&lt;/module&gt;
+    &lt;module&gt;message-queue&lt;/module&gt;
+&lt;/modules&gt;
+</code></pre>
+
+<p>Nous vous avons fourni les classes suivantes :</p>
+
+<ul>
+  <li><em>Message</em></li>
+  <li><em>MessageQueue</em></li>
+  <li><em>MqException</em></li>
+  <li><em>Operand</em></li>
+</ul>
+
+<p>ainsi qu’un test pour <em>MessageQueue</em> : <em>MessageQueueTest</em>.</p>
+
+<p>Vous disposez ainsi d’une implémentation opérationelle de file de message persistente, certe imparfaite.</p>
+
+<h2 id="implmentation-du-protocole-applicatif">Implémentation du protocole applicatif</h2>
+
+<p>Les classes <em>MessageBroker</em> et <em>MessageBrokerClient</em> contiennent pour l’instant des implémentations vides, mais leurs méthodes publiques sont spécifiées.</p>
+
+<p>De même, la classe <em>MessageBrokingTest</em> contient les tests que votre implémentation doit passer. Pour l’instant, les tests sont mis en commentaires.</p>
+
+<p>Implémentez un protocole applicatif sur TCP au sein de ces classes. Servez-vous de <em>MessageBrokingTest</em> comme spécification, et décommentez au fur et à mesure ses méthodes pour valider votre implémentation.</p>
+
+<h2 id="amliorer-messagequeue">Améliorer <em>MessageQueue</em></h2>
+
+<p><em>MessageQueue</em> gaspille du stockage disque puisque les messages délivrés ne sont pas effacés.</p>
+
+<p>Proposez un correctif qui ne casse pas les tests existants. Ajoutez un test dédié à cette évolution.</p>
+
+    </div>    
+</body>
+
+</html>

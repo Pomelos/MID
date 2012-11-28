@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sujet</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen" charset="utf-8">
+    <style type="text/css" media="screen">
+        code {
+            background-color: white;
+        }
+    </style>    
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="td-glassfish">TD GlassFish</h1>
+
+<p>L’objectif de ce TD est de vous familiariser avec Java EE 6 à travers un serveur d’application qui implémente cette spécification : <a href="http://glassfish.org/">GlassFish</a>.</p>
+
+<h2 id="installation-de-glassfish">Installation de GlassFish</h2>
+
+<p>Récupérez la dernière version de <em>GlassFish (Open Source Distribution)</em> depuis la <a href="http://glassfish.java.net/public/downloadsindex.html">page de téléchargement du projet</a>. Vous devez récupérer une archive ZIP.</p>
+
+<p>Au vu du volume de l’archive décompressée et de votre tendance naturelle à avoir un répertoire <em>home</em> surchargé vous travaillerez dans <strong>/tmp/</strong>. Une autre raison moins sujette à polémiques sont les entrées sorties nécessairement plus rapides sur un disque locales que sur un montage réseau.</p>
+
+<p>Décompressez l’archive dans <strong>/tmp/VOUS/glassfish</strong> en prenant soin de remplacer <em>VOUS</em> par quelque chose de plus intelligent. Vous aurez une préférence naturelle pour l’outil en ligne de commande <em>unzip</em>.</p>
+
+<h2 id="dmarrage">Démarrage</h2>
+
+<p>Déplacez vous dans le répertoire principal de GlassFish et lancez l’environnement par défaut au doux nom de <em>domain1</em> :</p>
+
+<pre><code>bin/asadmin start-domain domain1
+</code></pre>
+
+<p>Quelles informations importantes voyez-vous sur la console ?</p>
+
+<p>Connectez-vous à <a href="http://localhost:4848/">l’interface web de la console d’administration</a>. </p>
+
+<p><span class="label warning">Note</span> : le premier démarrage de la console est un peu long car Glassfish télécharge les modules de l’interface.</p>
+
+<p>Faites le tour des différentes sections de la console d’administration (applications, resources, configuration, …). Notez la présence du bouton <em>help</em> en haut à droite de l’interface.</p>
+
+<p><span class="label notice">Note</span> : la console web d’administration propose les mêmes fonctionnalité que le script en ligne de commande asadmin.</p>
+
+<p>Que contiennent les répertoires suivants ?</p>
+
+<ul>
+  <li><code>bin/</code></li>
+  <li><code>javadb/</code></li>
+  <li><code>mq/</code></li>
+  <li><code>pkg/</code></li>
+  <li><code>glassfish/</code></li>
+  <li><code>glassfish/lib/</code></li>
+  <li><code>glassfish/domains/</code></li>
+  <li><code>glassfish/domains/domain1/</code></li>
+  <li><code>glassfish/domains/domain1/applications/</code></li>
+  <li><code>glassfish/domains/domain1/autodeploy/</code></li>
+  <li><code>glassfish/domains/domain1/config/</code></li>
+  <li><code>glassfish/domains/domain1/lib/</code></li>
+  <li><code>glassfish/domains/domain1/logs/</code></li>
+</ul>
+
+<p>Arrêtez votre serveur Glassfish :</p>
+
+<pre><code>bin/asadmin stop-domain domain1
+</code></pre>
+
+<h2 id="domaines">Domaines</h2>
+
+<p>GlassFish est installé par défaut avec un domaine du doux nom de <em>domain1</em>. Un domaine est une instance de serveur qui possède sa propre configuration, ses propres logs, ses propres applications déployées, etc. Il est ainsi possible de faire tourner plusieurs instances autonomes de GlassFish sur un même serveur pour peu que les domaines utilisent des ports réseaux différents pour les services qu’ils vont faire tourner (ex : 2 domaines qui chercheraient à lancer leurs consoles d’administration sur le port 4848).</p>
+
+<p>Une utilisation pragmatique des domaines est de pouvoir disposer de configurations différentes selon les usages :</p>
+
+<ul>
+  <li>une configuration de développement, similaire à celle livrée par défaut dans domain1</li>
+  <li>une configuration de production, avec authentification sur la console d’administration,  des restrictions de sécurité, un audit permanent des différents services</li>
+  <li>une configuration en cluster avec réplication des données de session web</li>
+  <li>… et plus encore.</li>
+</ul>
+
+<p>Pour créer un domaine, nous allons utiliser le script à tout faire <strong>asadmin</strong>. L’aide de asadmin s’invoque comme ceci :</p>
+
+<pre><code>bin/asadmin help
+</code></pre>
+
+<p>La commande pour créer un domaine étant create-domain, la liste des options est disponible depuis :</p>
+
+<pre><code>bin/asadmin help create-domain
+</code></pre>
+
+<ol>
+  <li>Créez un domaine nommé <strong>devel</strong>, dont l’administrateur est <strong>toto</strong>, dont le mot de passe est <strong>coin-coin</strong>, et dont la console d’administration est disponible sur le port <strong>14848</strong>.</li>
+  <li>Lancez le domaine, connectez-vous sur la console d’administration.</li>
+  <li>Où sont les fichiers correspondants au domaine ?</li>
+  <li>Arrêtez puis supprimez le domaine avec la commande <code>delete-domain</code> de <code>asadmin</code>.</li>
+</ol>
+
+<h2 id="tiens-une-todo-list-">Tiens, une todo-list …</h2>
+
+<p>Soyons originaux et utilisons une application de todo-list !</p>
+
+<p>Le projet est fourni dans le répertoire <strong>TaskEE</strong> (<em>Tasks Enterprise Edition</em>). Inspectez le contenu de ce projet d’une infinie complexité.</p>
+
+<ol>
+  <li>Pourquoi le <em>scope</em> de la dépendance Maven <code>javax:javaee-api:6.0</code> est-il <code>provided</code> ?</li>
+  <li>Comment la todo-list est-elle gardée en mémoire ? Quel est l’effet d’un arret du serveur ?</li>
+  <li>Quel sont les effets de <code>@SessionScoped</code> et <code>@Named</code> sur la classe <code>TaskList</code> ?</li>
+  <li>Comment <code>TaskServlet</code> fait-elle pour traiter les ajouts / suppressions de taches ? Pour faire le rendu HTML ?</li>
+  <li>Que produit <code>mvn package</code> comme artifact à déployer ?</li>
+</ol>
+
+<h2 id="dployons-dployons">Déployons, déployons</h2>
+
+<p>Pour déployer, rien de plus simple :</p>
+
+<pre><code>asadmin deploy chemin/vers/le/war
+</code></pre>
+
+<p>Pour voir les applications déployées :</p>
+
+<pre><code>asadmin list-applications
+</code></pre>
+
+<p>Pour dé-déployer :</p>
+
+<pre><code>asadmin undeploy taskee-1.0-SNAPSHOT
+</code></pre>
+
+<ol>
+  <li>Ouvrez une console ou onglet de console dédiée au suivi des logs. Pour cela vous ferez un <code>tail -f chemin/vers/le/fichier/qui/va/bien.log</code></li>
+  <li>Faites-le. Avec le plus grand sérieux. Et regardez les logs aussi.</li>
+  <li>Cherchez comment faire les opérations équivalentes depuis l’interface d’administration.</li>
+  <li>Faites-le aussi.</li>
+  <li>Accédez et essayez l’application.</li>
+  <li>Ouvrez un autre navigateur que celui que vous avez sous les yeux et connectez-vous à l’application. Que se passe-t-il comme prévu ?</li>
+</ol>
+
+<h2 id="cluster">Cluster</h2>
+
+<p>GlassFish supporte la gestion de clusters. Nous allons créer un cluster avec une instance locale, une instance sur une machine distante, et enfin déployer TaskEE sur le cluster.</p>
+
+<h3 id="mise-en-place">Mise en place</h3>
+
+<p>Créer un cluster : </p>
+
+<pre><code>asadmin create-cluster cluster
+asadmin list-clusters
+asadmin list-instances
+</code></pre>
+
+<p>À ce stade le cluster existe, mais il n’a pas d’instances.</p>
+
+<p>Commençons par une instance locale :</p>
+
+<pre><code>asadmin create-local-instance --cluster cluster local-instance-1
+asadmin list-instances -l
+asadmin start-cluster cluster
+asadmin list-instances -l
+asadmin list-nodes -l
+</code></pre>
+
+<p>Vous devez avoir 1 cluster avec 1 instance sur votre machine. Notez le numéro de port HTTP de votre instance.</p>
+
+<p>Ajoutez une deuxième instance locale nommée <strong>local-instance-2</strong> et assurez-vous de son bon fonctionnement.</p>
+
+<p>Vous pouvez jouer à démarrer / arreter les instances :</p>
+
+<pre><code>asadmin start-instance nom
+asadmin stop-instance nom
+asadmin list-instances -l
+(...)
+</code></pre>
+
+<h3 id="dployer-taskee">Déployer TaskEE</h3>
+
+<p>Pour déployer TaskEE sur le cluster, rien de plus simple :</p>
+
+<pre><code>asadmin deploy --target cluster chemin/qui/va/bien.war
+</code></pre>
+
+<p>Vérifiez que l’application est bien disponible sur chaque instance.</p>
+
+<p>On peut aussi vérifier le déploiement sur le cluster :</p>
+
+<pre><code>asadmin list-applications cluster
+</code></pre>
+
+<p>Faites un <code>undeploy</code> de TaskEE du cluster. Vérifier.</p>
+
+<h3 id="ajouter-un-noeud-distant">Ajouter un noeud distant</h3>
+
+<p><span class="label notice">Trop bien !</span> GlassFish est capable de s’installer sur une machine distante pourvu que OpenSSH et Java soient disponibles.</p>
+
+<p>Les connexions SSH peuvent se faire sans mot de passe si vous possédez un jeu de clés public / privées. La procédure est largement documentée, mais GlassFish peut simplifier le travail pour vous.</p>
+
+<p>Prenez l’adresse IP de la machine voisine. Vous allez l’utiliser comme machine distante.</p>
+
+<pre><code>asadmin setup-ssh --sshuser votre-login adresse-ip
+</code></pre>
+
+<p>Ceci va générer une clé SSH au besoin, et l’envoyer sur la machine distante. Vous pouvez vérifier que vous vous connectez sans mot de passe :</p>
+
+<pre><code>ssh votre-login@adresse-ip
+exit
+</code></pre>
+
+<p>Si cela ne marche pas vous devrez juste saisir votre mot de passe au besoin. On a connu des situations plus critiques.</p>
+
+<p>Demandons à GlassFish de s’installer dans un répertoire de <code>/tmp/</code> sur la machine distante :</p>
+
+<pre><code>asadmin install-node --installdir /tmp/mon-login-INVADERS/glassfish adresse-ip
+</code></pre>
+
+<p>Admirez le travail.</p>
+
+<p>Il vous faut désormais enregistrer cette installation distante en tant que <em>noeud</em> GlassFish. La commande ressemble à celle-ci :</p>
+
+<pre><code>asadmin create-node-ssh --nodehost adresse-ip --installdir /tmp/mon-login-INVADERS/glassfish plop
+</code></pre>
+
+<p>Vous remplacerez <code>plop</code> par un nom à donner au noeud, sauf si vous etes un(e) fan absolue de <code>plop</code>.</p>
+
+<p>Il ne vous reste plus qu’à créer une instance distante sur ce noeud, le tout par SSH :</p>
+
+<pre><code>asadmin create-instance --cluster cluster --node plop plop-instance-1
+</code></pre>
+
+<p>Par défaut l’instance doit etre off. Vérifiez, démarrez-là :</p>
+
+<pre><code>asadmin list-instances -l
+asadmin start-instance plop-instance-1
+(...)
+</code></pre>
+
+<p>Le tout est piloté par SSH depuis votre machine …</p>
+
+<h3 id="dployons-de-nouveau">Déployons de nouveau</h3>
+
+<p>Déployez TaskEE sur le cluster. Vérifiez que l’application est déployée sur toutes les instances. Testez là.</p>
+
+<p>Les todo-lists sont-elles synchronisées ? La réponse devrait etre non.</p>
+
+<h3 id="rplication-de-session--failover">Réplication de session + failover</h3>
+
+<p>Il faut toucher un peu la configuration pour que la réplication de session fonctionne.</p>
+
+<pre><code>asadmin set my-first-cluster-config.availability-service.availability-enabled=true
+</code></pre>
+
+<p>Il faut ensuite re-déployer l’application avec le paramètre <code>--availabilityenabled=true</code> en supplément.</p>
+
+<p>Les todo-lists deviennent-elles synchronisées ?</p>
+
+<p>Jouez à arreter / démarrer des instances pour voir ce qui se passe.</p>
+
+<h2 id="frontal-http-avanc">Frontal HTTP (avancé)</h2>
+
+<p>Dans la réalité vraie, on déploie un serveur HTTP dit frontal. Il dispatche ensuite aux instances du cluster.</p>
+
+<p>Configurez Apache avec <code>mod_proxy</code> et <code>mod_proxy_balancer</code> pour distribuer les requetes aux instances du cluster.</p>
+
+    </div>    
+</body>
+
+</html>

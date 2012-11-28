@@ -1,0 +1,34 @@
+<webapp-structure>
+  <registeredFiles>
+    <entry>
+      <string>currentBuild</string>
+      <path-set>
+        <pathsSet class="linked-hash-set">
+          <string>WEB-INF/views/index.jsp</string>
+          <string>WEB-INF/views/board.jsp</string>
+          <string>WEB-INF/beans.xml</string>
+          <string>WEB-INF/web.xml</string>
+          <string>index.jsp</string>
+          <string>WEB-INF/classes/chatapp/components/ChatBoard.class</string>
+          <string>WEB-INF/classes/chatapp/presentation/JoinServlet.class</string>
+          <string>WEB-INF/classes/chatapp/presentation/BoardServlet.class</string>
+          <string>WEB-INF/classes/chatapp/model/ChatMessage.class</string>
+          <string>WEB-INF/classes/chatapp/model/Participant.class</string>
+        </pathsSet>
+      </path-set>
+    </entry>
+  </registeredFiles>
+  <dependenciesInfo>
+    <org.apache.maven.plugin.war.util.DependencyInfo>
+      <dependency>
+        <groupId>javax</groupId>
+        <artifactId>javaee-api</artifactId>
+        <version>6.0</version>
+        <type>jar</type>
+        <scope>provided</scope>
+        <exclusions/>
+        <optional>false</optional>
+      </dependency>
+    </org.apache.maven.plugin.war.util.DependencyInfo>
+  </dependenciesInfo>
+</webapp-structure>

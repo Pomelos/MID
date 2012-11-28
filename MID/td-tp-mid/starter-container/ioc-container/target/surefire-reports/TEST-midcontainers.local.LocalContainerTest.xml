@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="0.077" errors="1" skipped="0" tests="3" name="midcontainers.local.LocalContainerTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/opt/sun-jdk-1.6.0.26/jre/lib/i386"/>
+    <property name="java.vm.version" value="20.1-b02"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="FR"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/home/2010/kpomorski/4TC/MID/td-tp-mid/starter-container/ioc-container"/>
+    <property name="java.runtime.version" value="1.6.0_26-b03"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="basedir" value="/home/2010/kpomorski/4TC/MID/td-tp-mid/starter-container/ioc-container"/>
+    <property name="java.endorsed.dirs" value="/opt/sun-jdk-1.6.0.26/jre/lib/endorsed"/>
+    <property name="os.arch" value="i386"/>
+    <property name="surefire.real.class.path" value="/tmp/surefirebooter633124820360145150.jar"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Linux"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/opt/sun-jdk-1.6.0.26/jre/lib/i386/server:/opt/sun-jdk-1.6.0.26/jre/lib/i386:/opt/sun-jdk-1.6.0.26/jre/../lib/i386:/opt/ns-allinone-2.34/otcl-1.13:/opt/ns-allinone-2.34/lib:/usr/java/packages/lib/i386:/lib:/usr/lib"/>
+    <property name="surefire.test.class.path" value="/home/2010/kpomorski/4TC/MID/td-tp-mid/starter-container/ioc-container/target/test-classes:/home/2010/kpomorski/4TC/MID/td-tp-mid/starter-container/ioc-container/target/classes:/home/kpomorski/.m2/repository/junit/junit/4.8.2/junit-4.8.2.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot Tiered Compilers"/>
+    <property name="os.version" value="3.1.0-rc10-sfx"/>
+    <property name="user.home" value="/home/kpomorski"/>
+    <property name="user.timezone" value=""/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="user.name" value="kpomorski"/>
+    <property name="java.class.path" value="/home/2010/kpomorski/4TC/MID/td-tp-mid/starter-container/ioc-container/target/test-classes:/home/2010/kpomorski/4TC/MID/td-tp-mid/starter-container/ioc-container/target/classes:/home/kpomorski/.m2/repository/junit/junit/4.8.2/junit-4.8.2.jar:"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="32"/>
+    <property name="java.home" value="/opt/sun-jdk-1.6.0.26/jre"/>
+    <property name="sun.java.command" value="/tmp/surefirebooter633124820360145150.jar /tmp/surefire7835790300943402638tmp /tmp/surefire3742052027705672071tmp"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="fr"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_26"/>
+    <property name="java.ext.dirs" value="/opt/sun-jdk-1.6.0.26/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="sun.boot.class.path" value="/opt/sun-jdk-1.6.0.26/jre/lib/resources.jar:/opt/sun-jdk-1.6.0.26/jre/lib/rt.jar:/opt/sun-jdk-1.6.0.26/jre/lib/sunrsasign.jar:/opt/sun-jdk-1.6.0.26/jre/lib/jsse.jar:/opt/sun-jdk-1.6.0.26/jre/lib/jce.jar:/opt/sun-jdk-1.6.0.26/jre/lib/charsets.jar:/opt/sun-jdk-1.6.0.26/jre/lib/modules/jdk.boot.jar:/opt/sun-jdk-1.6.0.26/jre/classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="localRepository" value="/home/kpomorski/.m2/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="0.012" classname="midcontainers.local.LocalContainerTest" name="check_definition_handling"/>
+  <testcase time="0.011" classname="midcontainers.local.LocalContainerTest" name="check_bindings"/>
+  <testcase time="0.019" classname="midcontainers.local.LocalContainerTest" name="check_injection">
+    <error message="Aucun constructeur trouvé pour satisfaire la demande midcontainers.components.EchoClient / midcontainers.components.SomeEchoClient" type="midcontainers.ContainerException">midcontainers.ContainerException: Aucun constructeur trouvé pour satisfaire la demande midcontainers.components.EchoClient / midcontainers.components.SomeEchoClient
+	at midcontainers.local.LocalContainer.obtainReference(LocalContainer.java:70)
+	at midcontainers.local.LocalContainer.obtainReference(LocalContainer.java:34)
+	at midcontainers.local.LocalContainerTest.check_injection(LocalContainerTest.java:98)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.runners.BlockJUnit4ClassRunner.runNotIgnored(BlockJUnit4ClassRunner.java:79)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:71)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:49)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:62)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:140)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:127)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:345)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1009)
+</error>
+    <system-out>Declare a component binding. 
+
+Declare a component binding. 
+
+Define a value. 
+
+Define a value. 
+
+Define a value. 
+
+step -&gt; parameterTypes[0] : interface midcontainers.components.Echo
+step -&gt; parameterTypes[0] : class java.lang.String
+</system-out>
+  </testcase>
+</testsuite>

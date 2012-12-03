@@ -22,6 +22,13 @@ public class ChatMessage implements Serializable{
     this.message = "empty";
   }
   
+  public ChatMessage(Participant participant, Date date, String themessage) 
+  {
+    this.transmitter = participant;
+    this.timestamp = new Date();
+    this.message = themessage;
+  }
+  
   public void setTransmitter(Participant messenger)
   {
     this.transmitter = messenger;

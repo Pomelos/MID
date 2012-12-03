@@ -8,15 +8,9 @@ import java.io.Serializable;
 @SessionScoped
 public class Participant implements Serializable{
 
-  private String name;
+  private String name = "N/A";
 
-  private String email;
-
-  Participant() 
-  {
-    this.name = "N/A";
-    this.email = "N/A";
-  }
+  private String email = "N/A";
   
   public void setName(String newname)
   {
